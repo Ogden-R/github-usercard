@@ -1,8 +1,25 @@
+import axios from 'axios';
+
+
+  //List of LS Instructors Github username's:
+  const gitHubData = [
+    {login:'Ogden-R'},
+    {login:'tetondan'},
+    {login:'dustinmyers'},
+    {login:'justsml'},
+    {login: 'luishrd'},
+    {login:'bigknell'},
+  ]
+  
+
+
+const entryPoint = document.querySelector('.cards');
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
-    https://api.github.com/users/<your name>
+    https://api.github.com/users/Ogden-R
 */
+const myGitHub = axios.get(`https://api.github.com/users/Ogden-R`)
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,27 +45,73 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+// const followersArray = [];
 
-/*
-  STEP 3: Create a function that accepts a single object as its only argument.
-    Using DOM methods and properties, create and return the following markup:
 
-    <div class="card">
-      <img src={image url of user} />
-      <div class="card-info">
-        <h3 class="name">{users name}</h3>
-        <p class="username">{users user name}</p>
-        <p>Location: {users location}</p>
-        <p>Profile:
-          <a href={address to users github page}>{address to users github page}</a>
-        </p>
-        <p>Followers: {users followers count}</p>
-        <p>Following: {users following count}</p>
-        <p>Bio: {users bio}</p>
-      </div>
-    </div>
-*/
+//   STEP 3: Create a function that accepts a single object as its only argument.
+//     Using DOM methods and properties, create and return the following markup:
+
+function cardMaker({ imageURL }) {
+  //make elements
+  const cardDiv = document.createElement('div');
+  const cardImage = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const cardTitle = document.createElement('h3');
+  const userName  = document.createElement('p');
+  const location = document.createElement('p');
+  const userProfile = document.createElement('p');
+  const gitHub = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const userBio = document.createElement('p');
+
+  //put in order
+  cardDiv.appendChild(cardImage);
+  cardDiv.appendChild(cardInfo);
+  cardInfo.appendChild(cardTitle);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(userProfile);
+  userProfile.appendChild(gitHub);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(userBio);
+
+  //add classes to elements
+  cardDiv.classList.add('card');
+  cardInfo.classList.add('card-info');
+  cardTitle.classList.add('name');
+  userName.classList.add('username');
+
+  //add text and srcs to items.
+  cardImage.src = imageURL;
+  cardTitle.textContent = `Name: ${this.name}`;
+  userName.textContent = `Username: ${this.login}`;
+  location.textContent = `Location: ${this.location}`;
+  gitHub.href = this.url;
+  gitHub.textContent =  `Click Here to view ${this.name}'s GitHub page!`;
+  followers.textContent = `Followers: ${this.followers}`;
+  following.textContent = `Following: ${this.following}`;
+  userBio.textContent = `Bio: ${this.bio}`;
+
+  return cardDiv;
+
+}
+//     <div class="card">
+//       <img src={image url of user} />
+//       <div class="card-info">
+//         <h3 class="name">{users name}</h3>
+//         <p class="username">{users user name}</p>
+//         <p>Location: {users location}</p>
+//         <p>Profile:
+//           <a href={address to users github page}>{address to users github page}</a>
+//         </p>
+//         <p>Followers: {users followers count}</p>
+//         <p>Following: {users following count}</p>
+//         <p>Bio: {users bio}</p>
+//       </div>
+//     </div>
+
 
 /*
   List of LS Instructors Github username's:
@@ -58,3 +121,29 @@ const followersArray = [];
     luishrd
     bigknell
 */
+const getCards = () => {
+  try {
+      const resp = axios.get(`https://api.github.com/users/${gitHubData[i].login}`);
+            
+      for (let i = 0; i<resp.data.message.length; i++) {
+        const card = { imageURL: resp.data.message[i], login: gitHubData[i].login }
+        const madeCard = cardMaker(card);
+        entryPoint.appendChild(madeCard);
+      
+      }
+    } catch(err) {
+      const errorText = document.createElement('p');
+      errorText.textContent = `Whoops, can't do that. Try again later!`;
+      document.body.appendChild(errorText);
+    }  finally {
+      console.log("Honey, I'm Home!");
+    } 
+    return getCards;
+}
+
+const cardElements = gitHubData.map(cardElem => {
+  return cardMaker(cardElem);
+})
+cardElements.forEach(cardElement => {
+  entryPoint.appendChild(cardElement);
+})
