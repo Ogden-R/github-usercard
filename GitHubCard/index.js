@@ -4,25 +4,29 @@ import axios from 'axios';
 
   //List of LS Instructors Github username's:
   const gitHubLogIns = [
-    ['Ogden-R'],
-    ['tetondan'],
-    ['dustinmyers'],
-    ['justsml'],
-    ['luishrd'],
-    ['bigknell'],
+    'Ogden-R',
+    'tetondan',
+    'dustinmyers',
+    'justsml',
+    'luishrd',
+    'bigknell'
   ];
+
+// console.log(gitHubLogIns);
 
 const logInData = []; 
 function getData(array){
   for (let i=0; i<array.length; i++){
-logInData.push([`https://api.github.com/users/${array[i]}`]);
+logInData.push(`https://api.github.com/users/${array[i]}`);
   }
   return logInData;
 }
 
 console.log(getData(gitHubLogIns));
-console.log(logInData);
-
+console.log(logInData[0]);
+console.log(logInData[1]);
+console.log(logInData[2]);
+console.log(logInData[5]);
 
 const entryPoint = document.querySelector('.cards');
 /*
@@ -147,19 +151,19 @@ cardElements.forEach(cardElement => {
 
 
 const getCards = () => {
-  // try {
+  try {
     for(let i = 0; i<logInData.length; i++) {
       axios.get(logInData[i]);
-        const madeCard = cardMaker(logInData[i]);
+        let madeCard = cardMaker(logInData[i]);
         entryPoint.appendChild(madeCard);
       }
-    // } catch(err) {
-    //   const errorText = document.createElement('p');
-    //   errorText.textContent = `Whoops, can't do that. Try again later!`;
-    //   document.body.appendChild(errorText);
-    // }  finally {
-    //   console.log("Honey, I'm Home!");
-    // } 
+    } catch(err) {
+      const errorText = document.createElement('p');
+      errorText.textContent = `Whoops, can't do that. Try again later!`;
+      document.body.appendChild(errorText);
+    } finally {
+      console.log("Honey, I'm Home!");
+    } 
     return getCards;
 }
 
